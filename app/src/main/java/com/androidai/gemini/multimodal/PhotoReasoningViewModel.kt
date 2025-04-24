@@ -3,16 +3,23 @@ package com.androidai.gemini.multimodal
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.content
+import com.androidai.gemini.api.GeminiAIService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for photo reasoning functionality using the Gemini AI service.
+ *
+ * This class has been updated to use the direct Gemini REST API via GeminiAIService
+ * instead of the Google AI SDK's GenerativeModel.
+ *
+ * @param geminiService The Gemini AI service used to generate responses for image-based queries.
+ */
 class PhotoReasoningViewModel(
-    private val generativeModel: GenerativeModel
+    private val geminiService: GeminiAIService
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<PhotoReasoningUiState> =
@@ -20,6 +27,12 @@ class PhotoReasoningViewModel(
     val uiState: StateFlow<PhotoReasoningUiState> =
         _uiState.asStateFlow()
 
+    /**
+     * Analyzes images and answers a user's question about them.
+     *
+     * @param userInput The user's question about the images.
+     * @param selectedImages The images to analyze.
+     */
     fun reason(
         userInput: String,
         selectedImages: List<Bitmap>
@@ -29,22 +42,13 @@ class PhotoReasoningViewModel(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val inputContent = content {
-                    for (bitmap in selectedImages) {
-                        image(bitmap)
-                    }
-                    text(prompt)
-                }
-
-                var outputContent = ""
-
-                generativeModel.generateContentStream(inputContent)
-                    .collect { response ->
-                        outputContent += response.text
-                        _uiState.value = PhotoReasoningUiState.Success(outputContent)
-                    }
+                // Use the multimodal API to process the images and the prompt
+                val response = geminiService.getMultimodalResponse(prompt, selectedImages)
+                
+                // Update the UI state with the response
+                _uiState.value = PhotoReasoningUiState.Success(response)
             } catch (e: Exception) {
-                _uiState.value = PhotoReasoningUiState.Error(e.localizedMessage ?: "")
+                _uiState.value = PhotoReasoningUiState.Error(e.localizedMessage ?: "Unknown error")
             }
         }
     }
