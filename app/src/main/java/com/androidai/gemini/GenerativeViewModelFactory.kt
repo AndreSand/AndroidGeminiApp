@@ -6,15 +6,15 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.androidai.gemini.chat.ChatViewModel
 import com.androidai.gemini.multimodal.PhotoReasoningViewModel
 import com.androidai.gemini.text.SummarizeViewModel
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.generationConfig
+import com.google.firebase.Firebase
+import com.google.firebase.vertexai.vertexAI
 
 val GenerativeViewModelFactory = object : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
         viewModelClass: Class<T>,
         extras: CreationExtras
     ): T {
-        val config = generationConfig {
+        val config = com.google.firebase.vertexai.type.generationConfig {
             temperature = 0.7f
         }
 
@@ -23,9 +23,8 @@ val GenerativeViewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(SummarizeViewModel::class.java) -> {
                     // Initialize a GenerativeModel with the `gemini-flash` AI model
                     // for text generation
-                    val generativeModel = GenerativeModel(
-                        modelName = "gemini-1.5-flash-latest",
-                        apiKey = BuildConfig.GEM_API_KEY,
+                    val generativeModel = Firebase.vertexAI.generativeModel(
+                        modelName = "gemini-2.0-flash",
                         generationConfig = config
                     )
                     SummarizeViewModel(generativeModel)
@@ -34,9 +33,8 @@ val GenerativeViewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(PhotoReasoningViewModel::class.java) -> {
                     // Initialize a GenerativeModel with the `gemini-flash` AI model
                     // for multimodal text generation
-                    val generativeModel = GenerativeModel(
-                        modelName = "gemini-1.5-flash-latest",
-                        apiKey = BuildConfig.GEM_API_KEY,
+                    val generativeModel = Firebase.vertexAI.generativeModel(
+                        modelName = "gemini-2.0-flash",
                         generationConfig = config
                     )
                     PhotoReasoningViewModel(generativeModel)
@@ -44,9 +42,8 @@ val GenerativeViewModelFactory = object : ViewModelProvider.Factory {
 
                 isAssignableFrom(ChatViewModel::class.java) -> {
                     // Initialize a GenerativeModel with the `gemini-flash` AI model for chat
-                    val generativeModel = GenerativeModel(
-                        modelName = "gemini-1.5-flash-latest",
-                        apiKey = BuildConfig.GEM_API_KEY,
+                    val generativeModel = Firebase.vertexAI.generativeModel(
+                        modelName = "gemini-2.0-flash",
                         generationConfig = config
                     )
                     ChatViewModel(generativeModel)

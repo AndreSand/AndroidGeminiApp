@@ -1,8 +1,11 @@
 # Android AI app
 
-**TODO: Add your Gemini API Key in the file local.properties**
-GEM_API_KEY="YOUR_API_KEY"
-[Get Gemini API Key here](https://aistudio.google.com/app/apikey)
+## Read the blog with steps to generate the google-services.json file
+**TODO: Add your google-services.json file. Ensure it's at the root level of your app module ```app/google-services.json```**
+
+1. After registering your app, Firebase will generate the google-services.json file. 
+2. Click the button Download google-services.json. 
+3. In your Android Studio project, move the downloaded file google-services.json into the app module directory.
 
 # Demo App
 
