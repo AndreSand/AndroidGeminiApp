@@ -25,7 +25,7 @@ val GenerativeViewModelFactory = object : ViewModelProvider.Factory {
 
         // Create the Gemini API service with the API key from BuildConfig
         val geminiService = GeminiAIService(
-            model = "gemini-1.5-flash",
+            model = "gemini-2.0-flash",
             apiKey = BuildConfig.GEM_API_KEY,
             temperature = temperature,
         )

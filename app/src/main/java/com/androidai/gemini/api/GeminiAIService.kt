@@ -20,7 +20,7 @@ import io.ktor.http.*
 class GeminiAIService(
     private val apiKey: String,
     private val temperature: Float = 0.7f,
-    private val model: String = "gemini-1.5-flash"
+    private val model: String
 ) {
     /**
      * The HTTP client used for making network requests.
